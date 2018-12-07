@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
 
-const logger = require('morgan');
-const bodyParser = require('body-parser');
+import logger from 'morgan';
+
+import bodyParser from 'body-parser';
 
 // Set up the express app
 const app = express();
@@ -21,4 +22,4 @@ app.get('*', (req, res) => res.send({
   message: 'Welcome to the beginning SendIT app',
 }));
 
-module.exports = app;
+export default app;
