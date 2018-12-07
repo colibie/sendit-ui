@@ -4,7 +4,8 @@
   "description": "SendIT is a courier service that helps users deliver parcels to different destinations.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "nodemon ./bin/www",
+    "test": "mocha || true"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,22 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1"
-  }
+    "eslint-plugin-react": "^7.11.1",
+    "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.2",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "joi": "^14.3.0",
+    "joi-errors-for-forms": "^0.2.6",
+    "jsonwebtoken": "^8.4.0",
+    "morgan": "^1.9.1",
+    "nodemailer": "^4.7.0",
+    "pg": "^7.7.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "keywords": []
 }
