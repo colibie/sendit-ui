@@ -4,6 +4,8 @@ import logger from 'morgan';
 
 import bodyParser from 'body-parser';
 
+import pg from './config/database';
+
 // Set up the express app
 const app = express();
 
@@ -11,6 +13,9 @@ const app = express();
 if (process.env.NODE_ENV !== 'test') {
   app.use(logger('dev'));
 }
+
+// connect to db
+pg();
 
 // Parse incoming requests data (https://github.com/expressjs/body-parser)
 app.use(bodyParser.json());
