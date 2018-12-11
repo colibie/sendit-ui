@@ -1,0 +1,17 @@
+{
+  "keyOne": "aes-128-cbc",
+  "keyTwo": "senditpassword",
+  "charset": "utf-8",
+  "base": "hex",
+  "user": "postgres",
+  "database": "sendit",
+  "testDb": "sendit_test",
+  "host": "localhost",
+  "emailServiceProvider": "gmail",
+  "emailUserName": "senditchidera@gmail.com",
+  "emailUserPassword": "senditChidera",
+  "cloudinary_url": "cloudinary://771441239126477:w4mFFwAWyJod3VUBIoEczEYfMzs@dkazgpvin",
+  "cloud_name": "dkazgpvin",
+  "api_key": "771441239126477",
+  "api_secret": "w4mFFwAWyJod3VUBIoEczEYfMzs"
+}
