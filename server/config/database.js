@@ -1,16 +1,16 @@
-import pg from 'pg';
+const { Pool } = require('pg'); // used cause the code is run from terminal
 
-module.exports = async () => {
-  try {
-    // const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/sendit';
-    const connectionString = {
-      user: 'postgres',
-      database: 'sendit',
-      host: 'localhost',
-    };
-    const client = await new pg.Client(connectionString);
-    client.connect();
-  } catch (error) {
-    console.log({ err: error, message: 'Database connection error' });
-  }
+const env = process.env.NODE_ENV || 'development';
+// eslint-disable-next-line import/no-dynamic-require
+const secrets = require(`../middleware/ENV${env}.json`);
+
+module.exports = () => {
+  const connectionString = {
+    user: secrets.user,
+    database: secrets.database,
+    host: secrets.host,
+  };
+  const pool = new Pool(connectionString);
+  pool.on('connect', () => console.log('connected to db'));
+  return pool;
 };
