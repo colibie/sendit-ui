@@ -54,9 +54,10 @@ const User = {
     // validate req.body
     const valid = joi.validate(req.body, joi.login);
     if (valid) return res.status(409).json(valid);
-
+    
+    const comparePassword = hash(req.body.password);
     const text = 'SELECT * FROM users WHERE email = $1 AND password = $2';
-    const values = [req.body.email, req.body.password];
+    const values = [req.body.email, comparePassword];
     try {
       const { rows } = await db.query(text, values);
       if (!rows[0]) return res.status(401).send('Email/Password Incorrect');
