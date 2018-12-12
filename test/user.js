@@ -26,12 +26,11 @@ describe('api/v1/users', () => {
   describe('/GET users', () => {
     it('should GET all users', (done) => {
       request(server)
-        .get('/api/v1/users/')
+        .get('/api/v1/users/?isAdmin=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
         .end((err, res) => {
           should.exist(res.body);
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.should.have.property('message').eql('No existing users');
         });
       done();
     });
@@ -62,8 +61,8 @@ describe('api/v1/users', () => {
     // testing the login route
     it('should login user with token', (done) => {
       const user = {
-        username: 'chiric',
-        password: 'testing12345'
+        email: 'jenniferolibie@gmail.com',
+        password: 'testing12345',
       };
       request(server)
         .post('/api/v1/users/auth/login')

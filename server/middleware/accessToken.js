@@ -16,3 +16,21 @@ export const verifyToken = (accessToken) => {
   });
   return output;
 };
+
+export const userAuth = (req) => {
+  const accessToken = req.body.token || req.query.token || req.headers['x-access-token'];
+  if (!accessToken) return false;
+  const isTokenValid = verifyToken(accessToken);
+  if (isTokenValid === false) return false;
+  return true;
+};
+
+export const adminAuth = (req) => {
+  const accessToken = req.body.token || req.query.token || req.headers['x-access-token'];
+  if (!accessToken) return false;
+  const isTokenValid = verifyToken(accessToken);
+  if (isTokenValid === false) return false;
+  const isAdmin = req.body.isAdmin || req.params.isAdmin || req.query.isAdmin;
+  if (!isAdmin) return false;
+  return true;
+};

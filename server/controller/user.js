@@ -4,7 +4,7 @@ import db from './index';
 import hash from '../middleware/passwordMiddleware';
 import doesExist from '../middleware/doesExist';
 import joi from '../joiSchema/user';
-import { setToken } from '../middleware/accessToken';
+import * as auth from '../middleware/accessToken';
 
 const User = {
   async create(req, res) {
@@ -60,10 +60,12 @@ const User = {
     const values = [req.body.email, comparePassword];
     try {
       const { rows } = await db.query(text, values);
+      
       if (!rows[0]) return res.status(401).send('Email/Password Incorrect');
-
-      return res.status(200).send({ 
-        token: setToken(rows[0].id), 
+      console.log(auth.setToken({ id: rows[0].id }));
+      return res.status(200).send({
+        isAdmin: rows[0].isadmin, 
+        token: auth.setToken({ id: rows[0].id }), 
         result: rows[0] 
       });
     } catch (error) {
@@ -71,6 +73,9 @@ const User = {
     }
   },
   async getAll(req, res) {
+    const access = auth.adminAuth(req);
+    if (!access) return res.status(504).send('user access denied');
+
     const text = 'SELECT * FROM users';
     try {
       const { rows } = await db.query(text, []);
