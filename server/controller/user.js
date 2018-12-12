@@ -3,12 +3,13 @@ import uuidv4 from 'uuid/v4';
 import db from './index';
 import hash from '../middleware/passwordMiddleware';
 import doesExist from '../middleware/doesExist';
-import validate from '../joiSchema/user';
+import joi from '../joiSchema/user';
+import { setToken } from '../middleware/accessToken';
 
 const User = {
   async create(req, res) {
     // validate req.body
-    const valid = validate(req.body);
+    const valid = joi.validate(req.body, joi.signup);
     if (valid) return res.status(409).json(valid);
 
     const password = hash(req.body.password);
@@ -49,7 +50,26 @@ const User = {
       return res.status(500).send(error);
     }
   },
+  async login(req, res) {
+    // validate req.body
+    const valid = joi.validate(req.body, joi.login);
+    if (valid) return res.status(409).json(valid);
+    
+    const comparePassword = hash(req.body.password);
+    const text = 'SELECT * FROM users WHERE email = $1 AND password = $2';
+    const values = [req.body.email, comparePassword];
+    try {
+      const { rows } = await db.query(text, values);
+      if (!rows[0]) return res.status(401).send('Email/Password Incorrect');
 
+      return res.status(200).send({ 
+        token: setToken(rows[0].id), 
+        result: rows[0] 
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
   async getAll(req, res) {
     const text = 'SELECT * FROM users';
     try {

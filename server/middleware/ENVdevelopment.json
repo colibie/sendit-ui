@@ -7,6 +7,7 @@
   "database": "sendit",
   "testDb": "sendit_test",
   "host": "localhost",
+  "secret": "senditApp",
   "emailServiceProvider": "gmail",
   "emailUserName": "senditchidera@gmail.com",
   "emailUserPassword": "senditChidera",
