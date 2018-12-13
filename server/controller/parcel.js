@@ -41,6 +41,19 @@ const Parcel = {
     } catch (error) {
       return res.status(500).json({ status: 500, message: error });
     }
+  },
+  async getAll(req, res) {
+    const access = auth.adminAuth(req);
+    if (!access) return res.status(504).json({ status: 504, message: 'user access denied' });
+
+    const text = 'SELECT * FROM parcels';
+    try {
+      const { rows } = await db.query(text, []);
+      if (!rows[0]) return res.status(200).json({ status: 200, message: 'No existing parcels' });
+      return res.status(200).json({ status: 200, message: rows });
+    } catch (error) {
+      return res.status(500).json({ status: 500, message: error });
+    }
   }
 };
 
