@@ -9,18 +9,18 @@ import chaiHttp from 'chai-http';
 
 import server from '../server/server';
 
-import db from '../server/controller/index';
+// import db from '../server/controller/index';
 
 const should = _should();
 
 use(chaiHttp);
 
 describe('api/v1/users', () => {
-  before((done) => {
-    const text = 'DELETE FROM users';
-    db.query(text, []);
-    done();
-  });
+  // before((done) => {
+  //   const text = 'DELETE FROM users WHERE id != af0c6db5-c95f-4275-b63d-33d6346ce342';
+  //   db.query(text, []);
+  //   done();
+  // });
 
   // testing the GET users router
   describe('/GET users', () => {
@@ -70,7 +70,12 @@ describe('api/v1/users', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.should.have.property('token');
+          if (res.body.error) res.body.should.have.property('error');
+          else {
+            res.body.should.have.property('data');
+            res.body.data.should.have.property('token');
+            res.body.data.should.have.property('user');
+          }
         });
       done();
     });
