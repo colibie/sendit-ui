@@ -49,7 +49,7 @@ const Parcel = {
     const text = 'SELECT * FROM parcels';
     try {
       const { rows } = await db.query(text, []);
-      return res.status(200).json({ status: 200, message: rows });
+      return res.status(200).json({ status: 200, data: rows });
     } catch (error) {
       return res.status(500).json({ status: 500, error });
     }
@@ -70,22 +70,36 @@ const Parcel = {
     } catch (error) {
       return res.status(500).json({ status: 500, error });
     }
+  },
+  async changeDestination(req, res) {
+    const userAccess = auth.userAuth(req);
+    const adminAccess = auth.adminAuth(req);
+    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+
+    let text = 'SELECT * FROM parcels where id = $1';
+
+    try {
+      const { rows } = await db.query(text, [req.params.parcelId]);
+      // check if user id corresponds with placedby value
+      if (req.body.userId !== rows[0].placedby || !adminAccess) {
+        return res.status(504).json({ status: 504, error: 'user unauthorized' });
+      }
+      if (rows[0].status === 'delivered') return res.status(504).json({ status: 504, error: 'action not allowed. Parcel already delivered' });
+
+      text = 'UPDATE'; // write code for update query
+      return res.status(200).json({
+        status: 200,
+        data: [{
+          id: rows[0].id,
+          to: rows[0].to,
+          message: 'Parcel Destination Updated'
+        }]
+      });
+    } catch (error) {
+      return res.status(500).json({ status: 500, error });
+    }
   }
-  // async changeDestination(req, res) {
-  //   const access = auth.userAuth(req);
-  //   if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
-
-  //   const text = 'SELECT * FROM parcels WHERE $1';
-
-  //   try {
-  //     const { rows } = await db.query(text, [req.body.id])
-  //   }
-
-  //   // check if user id corresponds with placedby value
-  //   if (req.body.userid !== rows[0].placedby) return res.status(504).json({
-  // status: 504,
-  // error: 'user unauthorized' });
-  // }
 };
+
 
 export default Parcel;
