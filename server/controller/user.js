@@ -84,6 +84,20 @@ const User = {
     } catch (error) {
       return res.status(500).json({ status: 500, error });
     }
+  },
+  //  GET /users/<userId>/parcels. Fetch all parcel delivery order by a specific user.
+  async getUserparcels(req, res) {
+    const userAccess = auth.userAuth(req);
+    const adminAccess = auth.adminAuth(req);
+    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+
+    const text = 'SELECT * FROM parcels where placedby = $1';
+    try {
+      const { rows } = await db.query(text, [req.params.userId]);
+      return res.status(200).json({ status: 200, data: rows });
+    } catch (error) {
+      return res.status(500).json({ status: 500, error });
+    }
   }
 };
 
