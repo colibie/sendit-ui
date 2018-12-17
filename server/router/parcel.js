@@ -6,6 +6,7 @@ const router = Router();
 router.post('/', parcel.create);
 router.get('/', parcel.getAll);
 router.get('/:parcelId', parcel.getById);
+router.patch('/:parcelId/destination', parcel.changeDestination);
 // router.post('/auth/login', user.login);
 
 export default router;
