@@ -62,12 +62,14 @@ const User = {
       const { rows } = await db.query(text, values);
       
       if (!rows[0]) return res.status(401).json({ status: 401, error: 'Email/Password Incorrect' });
-      console.log(auth.setToken({ id: rows[0].id }));
       return res.status(200).json({
         status: 500,
-        isAdmin: rows[0].isadmin, 
-        token: auth.setToken({ id: rows[0].id }), 
-        data: rows
+        data: [{
+          isAdmin: rows[0].isadmin, 
+          token: auth.setToken({ id: rows[0].id }), 
+          user: rows[0]
+        }]
+        
       });
     } catch (error) {
       return res.status(500).json({ status: 500, error });
