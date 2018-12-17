@@ -155,7 +155,30 @@ const Parcel = {
     } catch (error) {
       return res.status(500).json({ status: 500, error });
     }
-  }
+  },
+  // PATCH  /parcels/<parcelId>/currentlocation.
+  // Change the present location of a specific parcel delivery order.
+  // Only the Admin is allowed to access this endpoint..
+  async changeLocation(req, res) {
+    const access = auth.adminAuth(req);
+    if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
+
+    let text = 'SELECT * FROM parcels where id = $1';
+    try {
+      const { rows } = await db.query(text, [req.params.parcelId]);
+      text = 'UPDATE'; // write code for update query
+      return res.status(200).json({
+        status: 200,
+        data: [{
+          id: rows[0].id,
+          currentLocation: rows[0].currentlocation,
+          message: 'Parcel location updated'
+        }]
+      });
+    } catch (error) {
+      return res.status(500).json({ status: 500, error });
+    }
+  },
 };
 
 

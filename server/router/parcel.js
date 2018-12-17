@@ -9,6 +9,6 @@ router.get('/:parcelId', parcel.getById);
 router.patch('/:parcelId/destination', parcel.changeDestination);
 router.patch('/:parcelId/cancel', parcel.cancel);
 router.patch('/:parcelId/status', parcel.changeStatus);
-// router.post('/auth/login', user.login);
+router.patch('/:parcelId/currentlocation', parcel.changeLocation);
 
 export default router;
