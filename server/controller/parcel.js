@@ -8,7 +8,7 @@ import mail from '../middleware/mailer';
 const Parcel = {
   async create(req, res) {
     const access = auth.userAuth(req);
-    if (!access) return res.status(504).send({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).send({ status: 401, error: 'user access denied' });
 
     const valid = joi.validate(req.body, joi.create);
     if (valid) return res.status(409).json({ status: 409, error: valid });
@@ -51,7 +51,7 @@ const Parcel = {
   },
   async getAll(req, res) {
     const access = auth.adminAuth(req);
-    if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'SELECT * FROM parcels';
     try {
@@ -64,7 +64,7 @@ const Parcel = {
   async getById(req, res) {
     const userAccess = auth.userAuth(req);
     const adminAccess = auth.adminAuth(req);
-    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!(userAccess || adminAccess)) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'SELECT * FROM parcels where id = $1';
     try {
@@ -81,7 +81,7 @@ const Parcel = {
   async changeDestination(req, res) {
     const userAccess = auth.userAuth(req);
     const adminAccess = auth.adminAuth(req);
-    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!(userAccess || adminAccess)) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     let text = 'SELECT * FROM parcels where id = $1';
 
@@ -90,7 +90,7 @@ const Parcel = {
       // check if user id corresponds with placedby value
 
       if (req.body.placedby !== rows[0].placedby && !adminAccess) {
-        return res.status(504).json({ status: 504, error: 'user unauthorized' });
+        return res.status(401).json({ status: 401, error: 'user unauthorized' });
       }
       // check if parcel is yet to be delivered
       if (rows[0].status === 'delivered') return res.status(504).json({ status: 504, error: 'action not allowed. Parcel already delivered' });
@@ -117,7 +117,7 @@ const Parcel = {
   async cancel(req, res) {
     const userAccess = auth.userAuth(req);
     const adminAccess = auth.adminAuth(req);
-    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!(userAccess || adminAccess)) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     let text = 'SELECT * FROM parcels where id = $1';
 
@@ -125,7 +125,7 @@ const Parcel = {
       const { rows } = await db.query(text, [req.params.parcelId]);
       // check if user id corresponds with placedby value
       if (req.body.placedby !== rows[0].placedby && !adminAccess) {
-        return res.status(504).json({ status: 504, error: 'user unauthorized' });
+        return res.status(401).json({ status: 401, error: 'user unauthorized' });
       }
       if (rows[0].active === 'false') return res.status(504).json({ status: 504, error: 'Parcel already cancelled' });
       if (rows[0].status === 'delivered') return res.status(504).json({ status: 504, error: 'action not allowed. Parcel already delivered' });
@@ -154,7 +154,7 @@ const Parcel = {
   // include user email in req.body
   async changeStatus(req, res) {
     const access = auth.adminAuth(req); // verify it's admin trying to change status
-    if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'UPDATE parcels SET status = $1 WHERE id = $2 returning *';
     try {
@@ -178,7 +178,7 @@ const Parcel = {
   // Only the Admin is allowed to access this endpoint..
   async changeLocation(req, res) {
     const access = auth.adminAuth(req);
-    if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'UPDATE parcels SET currentlocation = $1 WHERE id = $2 returning *';
     try {
