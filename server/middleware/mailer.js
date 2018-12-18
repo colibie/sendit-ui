@@ -17,9 +17,10 @@ const sendMail = (userEmail, parcelId, subject, action) => {
     html: `<h3>${subject}</h3>
           <p> Hi there, <br>
             please be informed that there has been a ${subject} 
-            with respect to <em>parcel id: ${parcelId}</em> to ${action}. 
+            with respect to <b>parcel id: ${parcelId}</b> to '${action}'. 
             
-            Thank you for delivering with us. </p>`
+            Thank you for delivering with us. </p><br>
+            <i>If you're not satisfied with this action, please report by replying</i>`
   };
 
   transporter.sendMail(mailOptions, (e, info) => {
