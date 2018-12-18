@@ -124,20 +124,27 @@ const Parcel = {
     try {
       const { rows } = await db.query(text, [req.params.parcelId]);
       // check if user id corresponds with placedby value
-      if (req.body.userId !== rows[0].placedby || !adminAccess) {
+      if (req.body.placedby !== rows[0].placedby && !adminAccess) {
         return res.status(504).json({ status: 504, error: 'user unauthorized' });
       }
       if (rows[0].active === 'false') return res.status(504).json({ status: 504, error: 'Parcel already cancelled' });
       if (rows[0].status === 'delivered') return res.status(504).json({ status: 504, error: 'action not allowed. Parcel already delivered' });
 
-      text = 'UPDATE'; // write code for update query
-      return res.status(200).json({
-        status: 200,
-        data: [{
-          id: rows[0].id,
-          message: 'Parcel Order Cancelled'
-        }]
-      });
+      text = 'UPDATE parcels SET active = $1 WHERE id = $2 returning *';
+      try {
+        const { rows } = await db.query(text, [false, req.params.parcelId]);
+        mail(req.body.userEmail, rows[0].id, 'Parcel Order Cancellation', false);
+        return res.status(200).json({
+          status: 200,
+          data: [{
+            id: rows[0].id,
+            active: rows[0].active,
+            message: 'Parcel order cancelled'
+          }]
+        });
+      } catch (error) {
+        return res.status(500).json({ status: 500, error });
+      }
     } catch (error) {
       return res.status(500).json({ status: 500, error });
     }
