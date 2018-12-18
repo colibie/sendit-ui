@@ -10,7 +10,7 @@ const User = {
   async create(req, res) {
     // validate req.body
     const valid = joi.validate(req.body, joi.signup);
-    if (valid) return res.status(409).json({ status: 409, error: valid });
+    if (valid) return res.status(422).json({ status: 422, error: valid });
 
     const password = hash(req.body.password);
     
@@ -53,7 +53,7 @@ const User = {
   async login(req, res) {
     // validate req.body
     const valid = joi.validate(req.body, joi.login);
-    if (valid) return res.status(409).json({ status: 409, error: valid });
+    if (valid) return res.status(422).json({ status: 422, error: valid });
     
     const comparePassword = hash(req.body.password);
     const text = 'SELECT * FROM users WHERE email = $1 AND password = $2';
@@ -77,7 +77,7 @@ const User = {
   },
   async getAll(req, res) {
     const access = auth.adminAuth(req);
-    if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'SELECT * FROM users';
     try {
@@ -91,12 +91,12 @@ const User = {
   async getUserparcels(req, res) {
     const userAccess = auth.userAuth(req);
     const adminAccess = auth.adminAuth(req);
-    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!(userAccess || adminAccess)) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'SELECT * FROM parcels where placedby = $1';
     try {
       const { rows } = await db.query(text, [req.params.placedby]);
-      if (rows[0] && req.params.placedby !== rows[0].placedby) return res.status(504).json({ status: 504, error: 'user access denied' });
+      if (rows[0] && req.params.placedby !== rows[0].placedby) return res.status(401).json({ status: 401, error: 'user access denied' });
       return res.status(200).json({ status: 200, data: rows });
     } catch (error) {
       return res.status(500).json({ status: 500, error });

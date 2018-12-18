@@ -8,15 +8,15 @@ import mail from '../middleware/mailer';
 const Parcel = {
   async create(req, res) {
     const access = auth.userAuth(req);
-    if (!access) return res.status(504).send({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).send({ status: 401, error: 'user access denied' });
 
     const valid = joi.validate(req.body, joi.create);
-    if (valid) return res.status(409).json({ status: 409, error: valid });
+    if (valid) return res.status(422).json({ status: 422, error: valid });
 
     try {
       // check if placedBy is valid userid
       const exists = await doesExist('id', req.body.placedby);
-      if (!exists) return res.status(409).send({ status: 409, error: 'user id is not valid' });
+      if (!exists) return res.status(422).send({ status: 422, error: 'user id is not valid' });
 
       const text = `INSERT INTO
       parcels(id, placedby, weight, weightmetric, senton, currentlocation, sentfrom, sentto, description)
@@ -51,7 +51,7 @@ const Parcel = {
   },
   async getAll(req, res) {
     const access = auth.adminAuth(req);
-    if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'SELECT * FROM parcels';
     try {
@@ -64,14 +64,14 @@ const Parcel = {
   async getById(req, res) {
     const userAccess = auth.userAuth(req);
     const adminAccess = auth.adminAuth(req);
-    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!(userAccess || adminAccess)) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'SELECT * FROM parcels where id = $1';
     try {
       const { rows } = await db.query(text, [req.params.parcelId]);
       if (userAccess && !adminAccess) {
         if (!rows[0]) return res.status(200).json({ status: 200, data: rows });
-        if (rows[0].placedby !== req.query.placedby) return res.status(504).json({ status: 504, error: 'user access denied' });
+        if (rows[0].placedby !== req.query.placedby) return res.status(401).json({ status: 401, error: 'user access denied' });
       }
       return res.status(200).json({ status: 200, data: rows });
     } catch (error) {
@@ -81,7 +81,7 @@ const Parcel = {
   async changeDestination(req, res) {
     const userAccess = auth.userAuth(req);
     const adminAccess = auth.adminAuth(req);
-    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!(userAccess || adminAccess)) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     let text = 'SELECT * FROM parcels where id = $1';
 
@@ -90,10 +90,10 @@ const Parcel = {
       // check if user id corresponds with placedby value
 
       if (req.body.placedby !== rows[0].placedby && !adminAccess) {
-        return res.status(504).json({ status: 504, error: 'user unauthorized' });
+        return res.status(401).json({ status: 401, error: 'user unauthorized' });
       }
       // check if parcel is yet to be delivered
-      if (rows[0].status === 'delivered') return res.status(504).json({ status: 504, error: 'action not allowed. Parcel already delivered' });
+      if (rows[0].status === 'delivered') return res.status(409).json({ status: 409, error: 'action not allowed. Parcel already delivered' });
       text = 'UPDATE parcels SET sentto = $1 WHERE id = $2 returning *';
       try {
         const { rows } = await db.query(text, [req.body.sentto, req.params.parcelId]);
@@ -117,7 +117,7 @@ const Parcel = {
   async cancel(req, res) {
     const userAccess = auth.userAuth(req);
     const adminAccess = auth.adminAuth(req);
-    if (!(userAccess || adminAccess)) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!(userAccess || adminAccess)) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     let text = 'SELECT * FROM parcels where id = $1';
 
@@ -125,10 +125,10 @@ const Parcel = {
       const { rows } = await db.query(text, [req.params.parcelId]);
       // check if user id corresponds with placedby value
       if (req.body.placedby !== rows[0].placedby && !adminAccess) {
-        return res.status(504).json({ status: 504, error: 'user unauthorized' });
+        return res.status(401).json({ status: 401, error: 'user unauthorized' });
       }
-      if (rows[0].active === 'false') return res.status(504).json({ status: 504, error: 'Parcel already cancelled' });
-      if (rows[0].status === 'delivered') return res.status(504).json({ status: 504, error: 'action not allowed. Parcel already delivered' });
+      if (rows[0].active === 'false') return res.status(409).json({ status: 409, error: 'Parcel already cancelled' });
+      if (rows[0].status === 'delivered') return res.status(409).json({ status: 409, error: 'action not allowed. Parcel already delivered' });
 
       text = 'UPDATE parcels SET active = $1 WHERE id = $2 returning *';
       try {
@@ -154,12 +154,12 @@ const Parcel = {
   // include user email in req.body
   async changeStatus(req, res) {
     const access = auth.adminAuth(req); // verify it's admin trying to change status
-    if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'UPDATE parcels SET status = $1 WHERE id = $2 returning *';
     try {
       const { rows } = await db.query(text, [req.body.status, req.params.parcelId]);
-      if (!rows[0]) res.status(504).json({ status: 504, error: 'parcel not found' });
+      if (!rows[0]) res.status(404).json({ status: 404, error: 'parcel not found' });
       mail(req.body.userEmail, rows[0].id, 'Parcel Status change', rows[0].status);
       return res.status(200).json({
         status: 200,
@@ -178,12 +178,12 @@ const Parcel = {
   // Only the Admin is allowed to access this endpoint..
   async changeLocation(req, res) {
     const access = auth.adminAuth(req);
-    if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
+    if (!access) return res.status(401).json({ status: 401, error: 'user access denied' });
 
     const text = 'UPDATE parcels SET currentlocation = $1 WHERE id = $2 returning *';
     try {
       const { rows } = await db.query(text, [req.body.currentlocation, req.params.parcelId]);
-      if (!rows[0]) res.status(504).json({ status: 504, error: 'parcel not found' });
+      if (!rows[0]) res.status(404).json({ status: 404, error: 'parcel not found' });
       mail(req.body.userEmail, rows[0].id, 'Parcel Current Location change', rows[0].currentlocation);
       return res.status(200).json({
         status: 200,
