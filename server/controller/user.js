@@ -10,7 +10,7 @@ const User = {
   async create(req, res) {
     // validate req.body
     const valid = joi.validate(req.body, joi.signup);
-    if (valid) return res.status(409).json({ status: 409, error: valid });
+    if (valid) return res.status(422).json({ status: 422, error: valid });
 
     const password = hash(req.body.password);
     
@@ -53,7 +53,7 @@ const User = {
   async login(req, res) {
     // validate req.body
     const valid = joi.validate(req.body, joi.login);
-    if (valid) return res.status(409).json({ status: 409, error: valid });
+    if (valid) return res.status(422).json({ status: 422, error: valid });
     
     const comparePassword = hash(req.body.password);
     const text = 'SELECT * FROM users WHERE email = $1 AND password = $2';

@@ -11,12 +11,12 @@ const Parcel = {
     if (!access) return res.status(401).send({ status: 401, error: 'user access denied' });
 
     const valid = joi.validate(req.body, joi.create);
-    if (valid) return res.status(409).json({ status: 409, error: valid });
+    if (valid) return res.status(422).json({ status: 422, error: valid });
 
     try {
       // check if placedBy is valid userid
       const exists = await doesExist('id', req.body.placedby);
-      if (!exists) return res.status(409).send({ status: 409, error: 'user id is not valid' });
+      if (!exists) return res.status(422).send({ status: 422, error: 'user id is not valid' });
 
       const text = `INSERT INTO
       parcels(id, placedby, weight, weightmetric, senton, currentlocation, sentfrom, sentto, description)
