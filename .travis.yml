@@ -1,2 +1,7 @@
 language: node_js
-os: windows
+
+os:
+ - windows
+
+node_js:
+  - "10.14.2"
