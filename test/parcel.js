@@ -77,7 +77,6 @@ describe('api/v1/parcels', () => {
         .end((err, res) => {
           res.should.have.status(201);
           res.body.should.be.a('object');
-          res.body.should.have.property('placedby').lengthOf.above(5);
         });
       done();
     });
@@ -117,7 +116,6 @@ describe('api/v1/parcels', () => {
         + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
         .send(parcelUpdate)
         .end((err, res) => {
-          console.log('jkjj');
           res.should.have.status(200); // find out codes for patching. Add to tracker as chore
           res.body.should.be.a('object');
           res.body.should.have.property('status');
@@ -146,6 +144,27 @@ describe('api/v1/parcels', () => {
           res.body.should.have.property('data');
           res.body.data[0].should.have.property('id');
           res.body.data[0].should.have.property('currentlocation').eql('Aba');
+          res.body.data[0].should.have.property('message');
+        });
+      done();
+    });
+
+    it('should cancel parcel order', (done) => {
+      const parcelUpdate = {
+        placedby: 'af0c6db5-c95f-4275-b63d-33d6346ce342',
+        userEmail: 'jenniferolibie@gmail.com',
+      };
+      request(server)
+        .patch('/api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb/cancel?'
+        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .send(parcelUpdate)
+        .end((err, res) => {
+          res.should.have.status(200); // find out codes for patching. Add to tracker as chore
+          res.body.should.be.a('object');
+          res.body.should.have.property('status');
+          res.body.should.have.property('data');
+          res.body.data[0].should.have.property('id');
+          res.body.data[0].should.have.property('cancel').eql(false);
           res.body.data[0].should.have.property('message');
         });
       done();
