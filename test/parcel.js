@@ -50,7 +50,8 @@ describe('api/v1/parcels', () => {
     // it doesnt even get to the point of verifying user since parcel doesn't exist
     it('should GET parcel by id after user authentication', (done) => {
       request(server)
-        .get('api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb?userId=af0c6db5-c95f-4275-b63d-33d6346ce342&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .get('api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb?placedby=af0c6db5-c95f-4275-b63d-33d6346ce342'
+        + '&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');

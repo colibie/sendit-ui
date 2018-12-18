@@ -71,7 +71,7 @@ const Parcel = {
       const { rows } = await db.query(text, [req.params.parcelId]);
       if (userAccess && !adminAccess) {
         if (!rows[0]) return res.status(200).json({ status: 200, data: rows });
-        if (rows[0].placedby !== req.query.userId) return res.status(504).json({ status: 504, error: 'user access denied' });
+        if (rows[0].placedby !== req.query.placedby) return res.status(504).json({ status: 504, error: 'user access denied' });
       }
       return res.status(200).json({ status: 200, data: rows });
     } catch (error) {
