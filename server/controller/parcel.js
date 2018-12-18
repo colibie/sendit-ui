@@ -3,6 +3,7 @@ import db from './index';
 import doesExist from '../middleware/doesExist';
 import joi from '../joiSchema/parcel';
 import * as auth from '../middleware/accessToken';
+import mail from '../middleware/mailer';
 
 const Parcel = {
   async create(req, res) {
@@ -127,6 +128,7 @@ const Parcel = {
   },
   // PATCH  /parcels/<parcelId>/status. Change the status of a specific parcel delivery order.
   // Only the Admin is allowed to access this endpoint.
+  // include user email in req.body
   async changeStatus(req, res) {
     const access = auth.adminAuth(req); // verify it's admin trying to change status
     if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
@@ -135,6 +137,7 @@ const Parcel = {
     try {
       const { rows } = await db.query(text, [req.body.status, req.params.parcelId]);
       if (!rows[0]) res.status(504).json({ status: 504, error: 'parcel not found' });
+      mail(req.body.userEmail, rows[0].id, 'Parcel Status change', rows[0].status);
       return res.status(200).json({
         status: 200,
         data: [{

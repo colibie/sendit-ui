@@ -87,6 +87,7 @@ describe('api/v1/parcels', () => {
     it('should change parcel\'s status', (done) => {
       const parcelUpdate = {
         placedby: 'af0c6db5-c95f-4275-b63d-33d6346ce342',
+        userEmail: 'jenniferolibie@gmail.com',
         status: 'transiting',
       };
       request(server)
