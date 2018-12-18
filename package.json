@@ -2,10 +2,10 @@
   "name": "sendit",
   "version": "1.0.0",
   "description": "SendIT is a courier service that helps users deliver parcels to different destinations.",
-  "main": "./server/bin/dev",
+  "main": "./bin/dev",
   "scripts": {
     "test": "SET NODE_ENV=test&& mocha --require babel-register",
-    "start:dev": "SET NODE_ENV=development&& nodemon server/bin/dev",
+    "start:dev": "SET NODE_ENV=development&& nodemon bin/dev",
     "build": "rimraf dist/ && mkdir dist && babel server -s -d dist"
   },
   "repository": {
@@ -34,6 +34,7 @@
     "mocha": "^5.2.0"
   },
   "dependencies": {
+    "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "joi": "^14.3.0",
