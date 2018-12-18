@@ -53,7 +53,7 @@ describe('api/v1/users', () => {
         .end((err, res) => {
           res.should.have.status(201);
           res.body.should.be.a('object');
-          res.body.should.have.property('password').lengthOf.above(5);
+          res.body.data[0].should.have.property('password').lengthOf.above(5);
         });
       done();
     });
@@ -73,9 +73,22 @@ describe('api/v1/users', () => {
           if (res.body.error) res.body.should.have.property('error');
           else {
             res.body.should.have.property('data');
-            res.body.data.should.have.property('token');
-            res.body.data.should.have.property('user');
+            res.body.data[0].should.have.property('token');
+            res.body.data[0].should.have.property('user');
           }
+        });
+      done();
+    });
+  });
+
+  describe('/GET parcels', () => {
+    it('should get parcels by user', (done) => {
+      request(server)
+        .get('/api/v1/users/af0c6db5-c95f-4275-b63d-33d6346ce342/parcels?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .end((err, res) => {
+          should.exist(res.body);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
         });
       done();
     });
