@@ -98,13 +98,10 @@ describe('api/v1/parcels', () => {
           res.should.have.status(200); // find out codes for patching. Add to tracker as chore
           res.body.should.be.a('object');
           res.body.should.have.property('status');
-          if (res.body.error) res.body.should.have.property('error');
-          else {
-            res.body.should.have.property('data');
-            res.body.data.should.have.property('id');
-            res.body.data.should.have.property('status').eql('transiting');
-            res.body.data.should.have.property('message');
-          }
+          res.body.should.have.property('data');
+          res.body.data[0].should.have.property('id');
+          res.body.data[0].should.have.property('status').eql('transiting');
+          res.body.data[0].should.have.property('message');
         });
       done();
     });
@@ -120,16 +117,36 @@ describe('api/v1/parcels', () => {
         + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
         .send(parcelUpdate)
         .end((err, res) => {
+          console.log('jkjj');
           res.should.have.status(200); // find out codes for patching. Add to tracker as chore
           res.body.should.be.a('object');
           res.body.should.have.property('status');
-          if (res.body.error) res.body.should.have.property('error');
-          else {
-            res.body.should.have.property('data');
-            res.body.data.should.have.property('id');
-            res.body.data.should.have.property('sentto').eql('Akure');
-            res.body.data.should.have.property('message');
-          }
+          res.body.should.have.property('data');
+          res.body.data[0].should.have.property('id');
+          res.body.data[0].should.have.property('sentto').eql('Akure');
+          res.body.data[0].should.have.property('message');
+        });
+      done();
+    });
+
+    it('should change parcel\'s currentLocation', (done) => {
+      const parcelUpdate = {
+        placedby: 'af0c6db5-c95f-4275-b63d-33d6346ce342',
+        userEmail: 'jenniferolibie@gmail.com',
+        currentlocation: 'Aba',
+      };
+      request(server)
+        .patch('/api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb/currentlocation?isAdmin=true&&'
+        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .send(parcelUpdate)
+        .end((err, res) => {
+          res.should.have.status(200); // find out codes for patching. Add to tracker as chore
+          res.body.should.be.a('object');
+          res.body.should.have.property('status');
+          res.body.should.have.property('data');
+          res.body.data[0].should.have.property('id');
+          res.body.data[0].should.have.property('currentlocation').eql('Aba');
+          res.body.data[0].should.have.property('message');
         });
       done();
     });

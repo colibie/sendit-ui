@@ -173,15 +173,16 @@ const Parcel = {
     const access = auth.adminAuth(req);
     if (!access) return res.status(504).json({ status: 504, error: 'user access denied' });
 
-    let text = 'SELECT * FROM parcels where id = $1';
+    const text = 'UPDATE parcels SET currentlocation = $1 WHERE id = $2 returning *';
     try {
-      const { rows } = await db.query(text, [req.params.parcelId]);
-      text = 'UPDATE'; // write code for update query
+      const { rows } = await db.query(text, [req.body.currentlocation, req.params.parcelId]);
+      if (!rows[0]) res.status(504).json({ status: 504, error: 'parcel not found' });
+      mail(req.body.userEmail, rows[0].id, 'Parcel Current Location change', rows[0].currentlocation);
       return res.status(200).json({
         status: 200,
         data: [{
           id: rows[0].id,
-          currentLocation: rows[0].currentlocation,
+          currentlocation: rows[0].currentlocation,
           message: 'Parcel location updated'
         }]
       });
