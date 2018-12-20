@@ -65,8 +65,7 @@ const User = {
       return res.status(200).json({
         status: 500,
         data: [{
-          isAdmin: rows[0].isadmin, 
-          token: auth.setToken({ id: rows[0].id }), 
+          token: auth.setToken({ id: rows[0].id, email: rows[0].email }), 
           user: rows[0]
         }]
         
@@ -76,9 +75,6 @@ const User = {
     }
   },
   async getAll(req, res) {
-    const access = auth.adminAuth(req);
-    if (!access) return res.status(401).json({ status: 401, error: 'user access denied' });
-
     const text = 'SELECT * FROM users';
     try {
       const { rows } = await db.query(text, []);
@@ -89,14 +85,10 @@ const User = {
   },
   //  GET /users/<userId>/parcels. Fetch all parcel delivery order by a specific user.
   async getUserparcels(req, res) {
-    const userAccess = auth.userAuth(req);
-    const adminAccess = auth.adminAuth(req);
-    if (!(userAccess || adminAccess)) return res.status(401).json({ status: 401, error: 'user access denied' });
-
     const text = 'SELECT * FROM parcels where placedby = $1';
     try {
       const { rows } = await db.query(text, [req.params.placedby]);
-      if (rows[0] && req.params.placedby !== rows[0].placedby) return res.status(401).json({ status: 401, error: 'user access denied' });
+      if (rows[0] && req.userData.id !== rows[0].placedby && !req.userData.admin) return res.status(401).json({ status: 401, error: 'user access denied' });
       return res.status(200).json({ status: 200, data: rows });
     } catch (error) {
       return res.status(500).json({ status: 500, error });
