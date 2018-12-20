@@ -8,7 +8,6 @@
   "testDb": "sendit_test",
   "host": "localhost",
   "secret": "senditApp",
-  "adminSecret": "senditAdmin",
   "emailServiceProvider": "gmail",
   "emailUserName": "b2comicscrum@gmail.com",
   "emailUserPassword": "genesystechhub",

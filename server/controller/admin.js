@@ -16,12 +16,12 @@ const Admin = {
     try {
       const { rows } = await db.query(text, values);
       
-      if (!rows[0]) return res.status(401).json({ status: 401, error: 'Email/Password Incorrect' });
+      if (!rows[0]) return res.status(401).json({ status: 401, error: 'Name/Password Incorrect' });
       return res.status(200).json({
         status: 500,
         data: [{
-          token: auth.setAdminToken({ id: rows[0].id }), 
-          admin: rows[0]
+          token: auth.setToken({ id: rows[0].id, admin: true }), 
+          user: rows[0]
         }]
         
       });
