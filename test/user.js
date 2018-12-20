@@ -26,7 +26,7 @@ describe('api/v1/users', () => {
   describe('/GET users', () => {
     it('should GET all users', (done) => {
       request(server)
-        .get('/api/v1/users/?isAdmin=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .get('/api/v1/users/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           should.exist(res.body);
           res.should.have.status(200);
@@ -51,9 +51,9 @@ describe('api/v1/users', () => {
         .post('/api/v1/users/auth/signup')
         .send(user)
         .end((err, res) => {
-          res.should.have.status(201);
+          res.should.have.status(409); // user already exists in db
           res.body.should.be.a('object');
-          res.body.data[0].should.have.property('password').lengthOf.above(5);
+          res.body.should.have.property('error');
         });
       done();
     });
@@ -84,7 +84,7 @@ describe('api/v1/users', () => {
   describe('/GET parcels', () => {
     it('should get parcels by user', (done) => {
       request(server)
-        .get('/api/v1/users/af0c6db5-c95f-4275-b63d-33d6346ce342/parcels?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .get('/api/v1/users/af0c6db5-c95f-4275-b63d-33d6346ce342/parcels?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           should.exist(res.body);
           res.should.have.status(200);

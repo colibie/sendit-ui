@@ -27,7 +27,7 @@ describe('api/v1/parcels', () => {
   describe('/GET parcels', () => {
     it('should GET all parcels', (done) => {
       request(server)
-        .get('/api/v1/parcels/?isAdmin=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .get('/api/v1/parcels/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           should.exist(res.body);
           res.should.have.status(200);
@@ -38,7 +38,7 @@ describe('api/v1/parcels', () => {
 
     it('should GET parcel by id', (done) => {
       request(server)
-        .get('api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb?isAdmin=true&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .get('api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -50,8 +50,8 @@ describe('api/v1/parcels', () => {
     // it doesnt even get to the point of verifying user since parcel doesn't exist
     it('should GET parcel by id after user authentication', (done) => {
       request(server)
-        .get('api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb?placedby=af0c6db5-c95f-4275-b63d-33d6346ce342'
-        + '&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .get('api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d?placedby=a4c1a330-8477-4b52-b7cf-ef290a0bbc1f'
+        + '&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -65,7 +65,7 @@ describe('api/v1/parcels', () => {
     // testing the signup route
     it('should POST a parcel with required fields', (done) => {
       const parcel = {
-        placedby: 'af0c6db5-c95f-4275-b63d-33d6346ce342', // this changes: how to solve it?
+        placedby: 'a4c1a330-8477-4b52-b7cf-ef290a0bbc1f', // this changes: how to solve it?
         weight: 20.4,
         weightmetric: 'kg',
         sentfrom: 'ghana',
@@ -73,7 +73,7 @@ describe('api/v1/parcels', () => {
         description: 'black shoe',
       };
       request(server)
-        .post('/api/v1/parcels/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .post('/api/v1/parcels/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YzFhMzMwLTg0NzctNGI1Mi1iN2NmLWVmMjkwYTBiYmMxZiIsImVtYWlsIjoiamVubmlmZXJvbGliaWVAZ21haWwuY29tIiwiaWF0IjoxNTQ1MzQ2NDMwLCJleHAiOjE1NDc5Mzg0MzB9.CDPMMjTuP6KHAqI-Jnyf9IkKX5IJgeKrMhpLbtDb_O8')
         .send(parcel)
         .end((err, res) => {
           res.should.have.status(201);
@@ -86,13 +86,11 @@ describe('api/v1/parcels', () => {
   describe('/PATCH parcels', () => {
     it('should change parcel\'s status', (done) => {
       const parcelUpdate = {
-        placedby: 'af0c6db5-c95f-4275-b63d-33d6346ce342',
-        userEmail: 'jenniferolibie@gmail.com',
         status: 'transiting',
       };
       request(server)
-        .patch('/api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb/status?isAdmin=true&&'
-        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .patch('/api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d/status?'
+        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .send(parcelUpdate)
         .end((err, res) => {
           res.should.have.status(200); // find out codes for patching. Add to tracker as chore
@@ -108,13 +106,11 @@ describe('api/v1/parcels', () => {
 
     it('should change parcel\'s destination', (done) => {
       const parcelUpdate = {
-        placedby: 'af0c6db5-c95f-4275-b63d-33d6346ce342',
-        userEmail: 'jenniferolibie@gmail.com',
         sentto: 'Akure',
       };
       request(server)
-        .patch('/api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb/destination?'
-        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .patch('/api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d/destination?'
+        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .send(parcelUpdate)
         .end((err, res) => {
           res.should.have.status(200); // find out codes for patching. Add to tracker as chore
@@ -130,13 +126,11 @@ describe('api/v1/parcels', () => {
 
     it('should change parcel\'s currentLocation', (done) => {
       const parcelUpdate = {
-        placedby: 'af0c6db5-c95f-4275-b63d-33d6346ce342',
-        userEmail: 'jenniferolibie@gmail.com',
         currentlocation: 'Aba',
       };
       request(server)
-        .patch('/api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb/currentlocation?isAdmin=true&&'
-        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
+        .patch('/api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d/currentlocation?'
+        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .send(parcelUpdate)
         .end((err, res) => {
           res.should.have.status(200); // find out codes for patching. Add to tracker as chore
@@ -151,21 +145,17 @@ describe('api/v1/parcels', () => {
     });
 
     it('should cancel parcel order', (done) => {
-      const parcelUpdate = {
-        placedby: 'af0c6db5-c95f-4275-b63d-33d6346ce342',
-        userEmail: 'jenniferolibie@gmail.com',
-      };
       request(server)
-        .patch('/api/v1/parcels/ce46cf2a-f2bf-47b1-b4bc-b9b8d78845cb/cancel?'
-        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ4Y2RhY2I5LTk4ZjgtNDU5ZS1hOGYzLWRkYzExYzhjMmE0ZCIsImlhdCI6MTU0NDY0NTk5MSwiZXhwIjoxNTQ3MjM3OTkxfQ.xgOku7K9vriqpiRh4eb1ECC7PHWbVmRw4YefapZLYYE')
-        .send(parcelUpdate)
+        .patch('/api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d/cancel?'
+        + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
+        .send()
         .end((err, res) => {
           res.should.have.status(200); // find out codes for patching. Add to tracker as chore
           res.body.should.be.a('object');
           res.body.should.have.property('status');
           res.body.should.have.property('data');
           res.body.data[0].should.have.property('id');
-          res.body.data[0].should.have.property('cancel').eql(false);
+          res.body.data[0].should.have.property('active').eql(false);
           res.body.data[0].should.have.property('message');
         });
       done();

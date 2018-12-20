@@ -12,7 +12,7 @@ const Schema = {
     password: Joi.string().required(),
   }),
   login: Joi.object().keys({
-    email: Joi.string().required(),
+    name: Joi.string().required(),
     password: Joi.string().required(),
   })
 };
