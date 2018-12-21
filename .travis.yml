@@ -1,2 +1,15 @@
 language: node_js
+<<<<<<< HEAD
 os: windows
+=======
+
+os:
+ - windows
+
+node_js:
+  - "10.14.2"
+
+cache:
+  directories:
+    - "node_modules"
+>>>>>>> 97964f66e9688d976c0d70ef564b78b1f5a59a77
