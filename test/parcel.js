@@ -3,9 +3,11 @@
 import 'babel-polyfill';
 // require dev-dependencies
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { should as _should, use, request } from 'chai';
+import { should as _should, use } from 'chai';
 
 import chaiHttp from 'chai-http';
+
+import supertest from 'supertest';
 
 import server from '../server/server';
 
@@ -26,7 +28,7 @@ describe('api/v1/parcels', () => {
   // testing the GET parsels router
   describe('/GET parcels', () => {
     it('should GET all parcels', (done) => {
-      request(server)
+      supertest(server)
         .get('/api/v1/parcels/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           should.exist(res.body);
@@ -37,21 +39,8 @@ describe('api/v1/parcels', () => {
     });
 
     it('should GET parcel by id', (done) => {
-      request(server)
+      supertest(server)
         .get('api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.data.should.be.a('array');
-        });
-      done();
-    });
-
-    // it doesnt even get to the point of verifying user since parcel doesn't exist
-    it('should GET parcel by id after user authentication', (done) => {
-      request(server)
-        .get('api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d?placedby=a4c1a330-8477-4b52-b7cf-ef290a0bbc1f'
-        + '&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
@@ -72,7 +61,7 @@ describe('api/v1/parcels', () => {
         sentto: 'onitsha',
         description: 'black shoe',
       };
-      request(server)
+      supertest(server)
         .post('/api/v1/parcels/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImE0YzFhMzMwLTg0NzctNGI1Mi1iN2NmLWVmMjkwYTBiYmMxZiIsImVtYWlsIjoiamVubmlmZXJvbGliaWVAZ21haWwuY29tIiwiaWF0IjoxNTQ1MzQ2NDMwLCJleHAiOjE1NDc5Mzg0MzB9.CDPMMjTuP6KHAqI-Jnyf9IkKX5IJgeKrMhpLbtDb_O8')
         .send(parcel)
         .end((err, res) => {
@@ -88,7 +77,7 @@ describe('api/v1/parcels', () => {
       const parcelUpdate = {
         status: 'transiting',
       };
-      request(server)
+      supertest(server)
         .patch('/api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d/status?'
         + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .send(parcelUpdate)
@@ -108,7 +97,7 @@ describe('api/v1/parcels', () => {
       const parcelUpdate = {
         sentto: 'Akure',
       };
-      request(server)
+      supertest(server)
         .patch('/api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d/destination?'
         + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .send(parcelUpdate)
@@ -128,7 +117,7 @@ describe('api/v1/parcels', () => {
       const parcelUpdate = {
         currentlocation: 'Aba',
       };
-      request(server)
+      supertest(server)
         .patch('/api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d/currentlocation?'
         + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .send(parcelUpdate)
@@ -145,7 +134,7 @@ describe('api/v1/parcels', () => {
     });
 
     it('should cancel parcel order', (done) => {
-      request(server)
+      supertest(server)
         .patch('/api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d/cancel?'
         + 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .send()
