@@ -3,9 +3,11 @@
 import 'babel-polyfill';
 // require dev-dependencies
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { should as _should, use, request } from 'chai';
+import { should as _should, use } from 'chai';
 
 import chaiHttp from 'chai-http';
+
+import supertest from 'supertest';
 
 import server from '../server/server';
 
@@ -25,7 +27,7 @@ describe('api/v1/users', () => {
   // testing the GET users router
   describe('/GET users', () => {
     it('should GET all users', (done) => {
-      request(server)
+      supertest(server)
         .get('/api/v1/users/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           should.exist(res.body);
@@ -47,7 +49,7 @@ describe('api/v1/users', () => {
         email: 'jenniferolibie@gmail.com',
         username: 'chiric',
       };
-      request(server)
+      supertest(server)
         .post('/api/v1/users/auth/signup')
         .send(user)
         .end((err, res) => {
@@ -64,7 +66,7 @@ describe('api/v1/users', () => {
         email: 'jenniferolibie@gmail.com',
         password: 'testing12345',
       };
-      request(server)
+      supertest(server)
         .post('/api/v1/users/auth/login')
         .send(user)
         .end((err, res) => {
@@ -83,7 +85,7 @@ describe('api/v1/users', () => {
 
   describe('/GET parcels', () => {
     it('should get parcels by user', (done) => {
-      request(server)
+      supertest(server)
         .get('/api/v1/users/af0c6db5-c95f-4275-b63d-33d6346ce342/parcels?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           should.exist(res.body);

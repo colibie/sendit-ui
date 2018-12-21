@@ -1,3 +1,5 @@
 /node_modules
 tddlearn.html
 /dist
+/coverage
+/.nyc_output
