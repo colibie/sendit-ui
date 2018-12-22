@@ -42,6 +42,7 @@ describe('api/v1/parcels', () => {
       supertest(server)
         .get('api/v1/parcels/d19910d6-e2d2-495e-ab9d-f746e16e340d?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
+          console.log(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.data.should.be.a('array');
