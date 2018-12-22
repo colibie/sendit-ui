@@ -3,8 +3,9 @@ import db from './index';
 import joi from '../joiSchema/parcel';
 import mail from '../middleware/mailer';
 
-let text = `SELECT p.id, p.placedby, p.weight, p.status, p.weightmetric, p.senton, p.currentlocation, p.sentfrom, p.sentto, p.description,
-u.username, u.email FROM parcels p 
+const text = `SELECT p.id, p.placedby, p.weight, p.weightmetric, p.senton, p.deliveredon, p.status,
+p.active, p.currentlocation, p.sentfrom, p.sentto, p.description, u.id as user, u.username, u.email 
+FROM parcels p 
 INNER JOIN users u
 ON p.placedby = u.id 
 WHERE p.id = $1`;
@@ -70,7 +71,10 @@ const Parcel = {
     }
   },
   async changeDestination(req, res) {
+    const update = 'UPDATE parcels SET sentto = $1 WHERE id = $2';
     try {
+      await db.query(update, [req.body.sentto, req.params.parcelId]);
+      // fetch parcel with user email
       const { rows } = await db.query(text, [req.params.parcelId]);
       if (!rows[0]) return res.status(404).json({ status: 404, error: 'Parcel not found' });
 
@@ -80,28 +84,25 @@ const Parcel = {
       }
       // check if parcel is yet to be delivered
       if (rows[0].status === 'delivered') return res.status(409).json({ status: 409, error: 'action not allowed. Parcel already delivered' });
-      text = 'UPDATE parcels SET sentto = $1 WHERE id = $2 returning *';
-      try {
-        const { rows } = await db.query(text, [req.body.sentto, req.params.parcelId]);
-        mail(rows[0].email, rows[0].id, 'Parcel Destination change', rows[0].sentto);
-        return res.status(200).json({
-          status: 200,
-          data: [{
-            id: rows[0].id,
-            sentto: rows[0].sentto,
-            message: 'Parcel destination changed'
-          }]
-        });
-      } catch (error) {
-        return res.status(500).json({ status: 500, error });
-      }
+      mail(rows[0].email, rows[0].id, 'Parcel Destination change', rows[0].sentto);
+      return res.status(200).json({
+        status: 200,
+        data: [{
+          id: rows[0].id,
+          sentto: rows[0].sentto,
+          message: 'Parcel destination changed'
+        }]
+      });
     } catch (error) {
       return res.status(500).json({ status: 500, error });
     }
   },
   // PATCH  /parcels/<parcelId>/cancel. Cancel a specific parcel delivery order.
   async cancel(req, res) {
+    const update = 'UPDATE parcels SET active = $1 WHERE id = $2';
     try {
+      await db.query(update, [false, req.params.parcelId]);
+      // fetch parcel with user email
       const { rows } = await db.query(text, [req.params.parcelId]);
       if (!rows[0]) return res.status(404).json({ status: 404, error: 'Parcel not found' });
 
@@ -109,24 +110,19 @@ const Parcel = {
       if (req.userData.id !== rows[0].placedby && !req.userData.admin) {
         return res.status(401).json({ status: 401, error: 'user unauthorized' });
       }
-      // if (rows[0].active === 'false') return res.status(409).json({ status: 409, error: 'Parcel already cancelled' });
+      // if (rows[0].active === 'false')
+      // return res.status(409).json({ status: 409, error: 'Parcel already cancelled' });
       if (rows[0].status === 'delivered') return res.status(409).json({ status: 409, error: 'action not allowed. Parcel already delivered' });
 
-      text = 'UPDATE parcels SET active = $1 WHERE id = $2 returning *';
-      try {
-        const { rows } = await db.query(text, [false, req.params.parcelId]);
-        mail(rows[0].email, rows[0].id, 'Parcel Order Cancellation', false);
-        return res.status(200).json({
-          status: 200,
-          data: [{
-            id: rows[0].id,
-            active: rows[0].active,
-            message: 'Parcel order cancelled'
-          }]
-        });
-      } catch (error) {
-        return res.status(500).json({ status: 500, error });
-      }
+      mail(rows[0].email, rows[0].id, 'Parcel Order Cancellation', false);
+      return res.status(200).json({
+        status: 200,
+        data: [{
+          id: rows[0].id,
+          active: rows[0].active,
+          message: 'Parcel order cancelled'
+        }]
+      });
     } catch (error) {
       return res.status(500).json({ status: 500, error });
     }
@@ -135,7 +131,7 @@ const Parcel = {
   // Only the Admin is allowed to access this endpoint.
   // include user email in req.body
   async changeStatus(req, res) {
-    const update = 'UPDATE parcels SET status = $1 WHERE id = $2 returning *';
+    const update = 'UPDATE parcels SET status = $1 WHERE id = $2';
     try {
       await db.query(update, [req.body.status, req.params.parcelId]);
       // fetch parcel with user email
@@ -158,11 +154,11 @@ const Parcel = {
   // Change the present location of a specific parcel delivery order.
   // Only the Admin is allowed to access this endpoint..
   async changeLocation(req, res) {
-    const text = 'UPDATE parcels SET currentlocation = $1 WHERE id = $2 returning *';
+    const update = 'UPDATE parcels SET currentlocation = $1 WHERE id = $2';
     try {
-      await db.query(text, [req.body.currentlocation, req.params.parcelId]);
+      await db.query(update, [req.body.currentlocation, req.params.parcelId]);
 
-      const { rows } = await db.query(text, [req.body.currentlocation, req.params.parcelId]);
+      const { rows } = await db.query(text, [req.params.parcelId]);
       if (!rows[0]) return res.status(404).json({ status: 404, error: 'parcel not found' });
 
       mail(rows[0].email, rows[0].id, 'Parcel Current Location change', rows[0].currentlocation);
