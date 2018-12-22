@@ -32,6 +32,7 @@ describe('api/v1/parcels', () => {
         .get('/api/v1/parcels/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo')
         .end((err, res) => {
           should.exist(res.body);
+          console.log(res.body);
           res.should.have.status(200);
           res.body.should.be.a('object');
         });
