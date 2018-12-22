@@ -4,7 +4,8 @@
   "description": "SendIT is a courier service that helps users deliver parcels to different destinations.",
   "main": "./server/bin/dev",
   "scripts": {
-    "test": "cross-env NODE_ENV=test nyc mocha",
+    "test": "cross-env NODE_ENV=test nyc mocha && nyc report --reporter=text-lcov | coveralls",
+    "cover": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "start:dev": "cross-env NODE_ENV=development nodemon server/bin/dev",
     "build": "rimraf dist/ && mkdir dist && babel server -s -d dist"
   },
@@ -26,6 +27,7 @@
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
+    "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
@@ -35,6 +37,7 @@
     "istanbul": "^0.4.5",
     "make-runnable": "^1.3.6",
     "mocha": "^5.2.0",
+    "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^13.1.0",
     "supertest": "^3.3.0"
   },
