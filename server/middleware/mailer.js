@@ -1,17 +1,16 @@
 import nodemailer from 'nodemailer';
-import secrets from './ENVdevelopment.json';
 
 const sendMail = (userEmail, parcelId, subject, action) => {
   const transporter = nodemailer.createTransport({
-    service: secrets.emailServiceProvider,
+    service: process.env.EMAILSERVICEPROVIDER,
     auth: {
-      user: secrets.emailUserName,
-      pass: secrets.emailUserPassword
+      user: process.env.EMAILUSERNAME,
+      pass: process.env.EMAILUSERPASSWORD
     }
   });
 
   const mailOptions = {
-    from: secrets.emailUserName,
+    from: process.env.EMAILUSERNAME,
     to: userEmail,
     subject,
     html: `<h3>${subject}</h3>

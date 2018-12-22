@@ -2,6 +2,11 @@ import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import routes from './router/index';
+
+if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line global-require
+  require('dotenv').load();
+}
 // Set up the express app
 const app = express();
 
