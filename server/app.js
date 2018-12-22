@@ -1,11 +1,12 @@
 import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
+import path from 'path';
 import routes from './router/index';
 
 if (process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line global-require
-  require('dotenv').load();
+  require('dotenv').config({ path: path.join(__dirname, '/.env') });
 }
 // Set up the express app
 const app = express();
