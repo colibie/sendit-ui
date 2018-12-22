@@ -9,6 +9,7 @@ export const setToken = (payload) => {
   return token;
 };
 
+// eslint-disable-next-line consistent-return
 export const authorize = (roles = []) => (req, res, next) => {
   try {
     const accessToken = req.body.token || req.query.token || req.headers['x-access-token'];

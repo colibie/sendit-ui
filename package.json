@@ -2,7 +2,7 @@
   "name": "sendit",
   "version": "1.0.0",
   "description": "SendIT is a courier service that helps users deliver parcels to different destinations.",
-  "main": "./bin/dev",
+  "main": "./server/bin/dev",
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc mocha",
     "start:dev": "cross-env NODE_ENV=development nodemon server/bin/dev",
@@ -39,7 +39,6 @@
     "supertest": "^3.3.0"
   },
   "dependencies": {
-    "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",

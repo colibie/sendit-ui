@@ -17,11 +17,11 @@ const User = {
     try {
       // check if username exists already
       let exists = await doesExist('username', req.body.username);
-      if (exists) return res.status(409).send({ message: 'Username already exists' });     
+      if (exists) return res.status(409).json({ status: 409, error: 'Username already exists' });     
       
       // check if email exists already
       exists = await doesExist('email', req.body.email);
-      if (exists) return res.status(409).send({ message: 'Email already exists' }); 
+      if (exists) return res.status(409).json({ status: 409, error: 'Email already exists' }); 
       
       // continue if not duplicates
       const text = `INSERT INTO
@@ -42,12 +42,12 @@ const User = {
       ];
       try {
         const { rows } = await db.query(text, values);
-        return res.status(201).send(rows[0]);
+        return res.status(201).json({ status: 201, data: rows });
       } catch (error) {
-        return res.status(500).send(error);
+        return res.status(500).json({ status: 500, error });
       }
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(500).json({ status: 500, error });
     }
   },
   async login(req, res) {
@@ -91,7 +91,7 @@ const User = {
       if (rows[0] && req.userData.id !== rows[0].placedby && !req.userData.admin) return res.status(401).json({ status: 401, error: 'user access denied' });
       return res.status(200).json({ status: 200, data: rows });
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(500).json({ status: 500, error });
     }
   }
 };

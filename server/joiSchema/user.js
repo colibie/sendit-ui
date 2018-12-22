@@ -7,7 +7,10 @@ const Schema = {
     return result.error.details[0].message;
   },
   signup: Joi.object().keys({
-    name: Joi.string().required(),
+    firstname: Joi.string().required(),
+    lastname: Joi.string().required(),
+    othernames: Joi.string().allow(''),
+    username: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
   }),
