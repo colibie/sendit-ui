@@ -11,7 +11,6 @@ module.exports = () => {
     host: 'localhost',
   };
   const pool = new Pool(connectionString);
-  console.log(pool);
   pool.on('connect', () => console.log('connected to db'));
   return pool;
 };
