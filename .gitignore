@@ -1,2 +1,5 @@
 /node_modules
 tddlearn.html
+.env
+/.nyc_output
+/coverage
