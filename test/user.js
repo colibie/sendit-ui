@@ -11,7 +11,9 @@ import request from 'supertest';
 
 import server from '../server/server';
 
-const supertest = request('http://localhost:5555');
+console.log(server);
+
+const supertest = request('http://localhost:8000');
 
 const should = _should();
 
