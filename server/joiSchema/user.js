@@ -15,7 +15,7 @@ const Schema = {
     password: Joi.string().required(),
   }),
   login: Joi.object().keys({
-    email: Joi.string().required(),
+    email: Joi.string().email().required(),
     password: Joi.string().required(),
   })
 };
