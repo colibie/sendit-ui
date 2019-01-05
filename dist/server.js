@@ -1,19 +1,16 @@
 'use strict';
 
-var _app = require('./app');
+// This will be our application entry. We'll setup our server here.
 
-var _app2 = _interopRequireDefault(_app);
+var app = require('./app'); // The express app we just created
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+require('babel-polyfill');
 
-// The express app we just created
+var port = parseInt(process.env.PORT, 10) || 8000;
 
-var port = parseInt(process.env.PORT, 10) || 8000; // This will be our application entry. We'll setup our server here.
-
-
-_app2.default.listen(port, function () {
+app.listen(port, function () {
   return console.log('App started on port ' + port);
 });
 
-module.exports = _app2.default;
+module.exports = app;
 //# sourceMappingURL=server.js.map
