@@ -6,8 +6,9 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc mocha && nyc report --reporter=text-lcov | coveralls",
     "cover": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
-    "start": "cross-env NODE_ENV=development nodemon server/bin/dev",
-    "build": "rimraf dist/ && mkdir dist && babel server -s -d dist"
+    "start:dev": "cross-env NODE_ENV=development nodemon server/bin/dev",
+    "build": "rimraf dist/ && mkdir dist && babel server -s -d dist",
+    "start": "npm run build && node dist/server.js"
   },
   "repository": {
     "type": "git",
