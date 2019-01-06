@@ -1,16 +1,22 @@
 'use strict';
 
-// This will be our application entry. We'll setup our server here.
+require('babel-register');
 
 require('babel-polyfill');
 
-var app = require('./app'); // The express app we just created
+var _app = require('./app');
 
-var port = parseInt(process.env.PORT, 10) || 8000;
+var _app2 = _interopRequireDefault(_app);
 
-app.listen(port, function () {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// The express app we just created
+
+var port = parseInt(process.env.PORT, 10) || 8000; // This will be our application entry. We'll setup our server here.
+
+_app2.default.listen(port, function () {
   return console.log('App started on port ' + port);
 });
 
-module.exports = app;
+module.exports = _app2.default;
 //# sourceMappingURL=server.js.map
