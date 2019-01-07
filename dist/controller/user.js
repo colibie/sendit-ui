@@ -161,7 +161,7 @@ var User = {
 
             case 13:
               return _context2.abrupt('return', res.status(200).json({
-                status: 500,
+                status: 200,
                 data: [{
                   token: (0, _accessToken.setToken)({ id: rows[0].id, email: rows[0].email }),
                   user: rows[0]

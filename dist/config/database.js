@@ -4,7 +4,7 @@ var _require = require('pg'),
     Pool = _require.Pool; // used cause the code is run from terminal
 
 
-var secrets = require('../middleware/ENV');
+var secrets = require('../middleware/ENV').default;
 
 var env = process.env.NODE_ENV || 'development';
 

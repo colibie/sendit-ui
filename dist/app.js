@@ -34,12 +34,17 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(_bodyParser2.default.json());
 app.use(_bodyParser2.default.urlencoded({ extended: false }));
 
-// Setup a default catch-all route that sends back a welcome message in JSON format.
-app.get('/', function (req, res) {
+// Setup a route that sends back a welcome message in JSON format.
+app.get('/api/v1', function (req, res) {
   return res.send({
     status: 200,
     message: 'Welcome to the beginning SendIT app'
   });
+});
+
+//
+app.get('/', function (req, res) {
+  return res.sendFile('documentation/doc.html', { root: __dirname });
 });
 
 (0, _index2.default)(app);
