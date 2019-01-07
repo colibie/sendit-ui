@@ -1,80 +1,167 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: https://sendit-dera.herokuapp.com/api/v1
 
-# Polls API
+# Sendit API
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+SendIT is a courier service that helps users deliver parcels to different destinations. 
 
-## Questions Collection [/questions]
+## Users [/users]
 
-### List All Questions [GET]
+This requires an admin authorisation token for access.
+
+### List All users [GET]
+
++ Request
+
+    + Headers
+    
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
 
 + Response 200 (application/json)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+        {
+            "status": 200,
+            "data": [
+                {
+                    "id": "bee35568-1282-4e3b-9bdf-2cd02861fed2",
+                    "firstname": "chidera",
+                    "lastname": "olibie",
+                    "othernames": "jennifer",
+                    "password": "cc493644d129c078912b03a1bf0ec2516e26e286cc9a72c5f84661eb6425fac3",
+                    "email": "chideraolibie1@gmail.com",
+                    "username": "joc123",
+                    "registered": "2018-12-10T23:00:00.000Z",
+                    "isadmin": false,
+                    "createddate": "2018-12-11T20:42:44.108Z",
+                    "modifieddate": "2018-12-11T20:42:44.108Z"
+                },
+                ...
+            ]
+        }
+        
++ Response 401 (application/json)
 
-### Create a New Question [POST]
+        {
+            "status": 401,
+            "error": "user auth failed"
+        }
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+## User Signup [/users/auth/signup]
+
+### signup user [POST]
 
 + Request (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "firstname": "chinny",
+            "lastname": "olibie",
+            "othernames": "jennifer",
+            "username": "oli",
+            "email": "chideraoli@gmail.com",
+            "password": "chisom"
         }
 
 + Response 201 (application/json)
 
-    + Headers
+        {
+            "status": 201,
+            "data": [
+                {
+                    "id": "e43db395-c3b3-442e-acea-4abf7222d244",
+                    "firstname": "chinny",
+                    "lastname": "olibie",
+                    "othernames": "jennifer",
+                    "password": "cc493644d129c078912b03a1bf0ec2516e26e286cc9a72c5f84661eb6425fac3",
+                    "email": "chideraoli@gmail.com",
+                    "username": "oli",
+                    "registered": "2019-01-05T23:00:00.000Z",
+                    "isadmin": false,
+                    "createddate": "2019-01-06T16:31:15.511Z",
+                    "modifieddate": "2019-01-06T16:31:15.511Z"
+                }
+            ]
+        }
 
-            Location: /questions/2
++ Response 409 (application/json)
 
-    + Body
+        {
+            "status": 409,
+            "error": "Username already exists"
+        }
+        
+## User Login [/users/auth/login]
 
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
+### login user [POST]
+
++ Request (application/json)
+
+        {
+            "email": "chideraoli@gmail.com",
+            "password": "chisom"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0M2RiMzk1LWMzYjMtNDQyZS1hY2VhLTRhYmY3MjIyZDI0NCIsImVtYWlsIjoiY2hpZGVyYW9saUBnbWFpbC5jb20iLCJpYXQiOjE1NDY3OTMwODksImV4cCI6MTU0OTM4NTA4OX0.T2NviAC4l_f8DZCWK1ocES31ot__XHNosc_5yUwrAN8",
+                    "user": {
+                        "id": "e43db395-c3b3-442e-acea-4abf7222d244",
+                        "firstname": "chinny",
+                        "lastname": "olibie",
+                        "othernames": "jennifer",
+                        "password": "cc493644d129c078912b03a1bf0ec2516e26e286cc9a72c5f84661eb6425fac3",
+                        "email": "chideraoli@gmail.com",
+                        "username": "oli",
+                        "registered": "2019-01-05T23:00:00.000Z",
+                        "isadmin": false,
+                        "createddate": "2019-01-06T16:31:15.511Z",
+                        "modifieddate": "2019-01-06T16:31:15.511Z"
                     }
-                ]
-            }
+                }
+            ]
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": 401,
+            "error": "Email/Password Incorrect"
+        }
+
+## User Parcels [/users/{userId}/parcels]
+
+This requires either admin authentication or user authentication
+
+### get user parcels [GET]
+
++ Request (application/json)
+
+    + Headers
+        
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+
+
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "id": "97543e4d-d4d8-4d41-9221-f06f0c734590",
+                    "placedby": "df863d82-ee86-4c50-abe9-a270ee8c7855",
+                    "weight": 70,
+                    "weightmetric": "kg",
+                    "senton": "2018-12-13T13:01:39.379Z",
+                    "deliveredon": null,
+                    "status": "placed",
+                    "active": true,
+                    "currentlocation": "lagos",
+                    "sentfrom": "lagos",
+                    "sentto": "niger",
+                    "description": "just send"
+                }
+            ]
+        }
