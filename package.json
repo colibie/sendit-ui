@@ -6,8 +6,9 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc mocha && nyc report --reporter=text-lcov | coveralls",
     "cover": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
-    "start": "cross-env NODE_ENV=development nodemon server/bin/dev",
-    "build": "rimraf dist/ && mkdir dist && babel server -s -d dist"
+    "start:dev": "cross-env NODE_ENV=development nodemon server/bin/dev",
+    "build": "rimraf dist/ && mkdir dist && babel server -s -d dist",
+    "start": "node dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,6 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-istanbul": "^5.1.0",
-    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
@@ -42,6 +42,7 @@
     "supertest": "^3.3.0"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",

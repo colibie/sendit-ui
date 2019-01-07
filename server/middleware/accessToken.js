@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import env from './ENV.json';
+import env from './ENV';
 
 export const setToken = (payload) => {
   const tokenTime = 60 * 60 * 24 * 30; // expires in 30 days

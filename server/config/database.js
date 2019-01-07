@@ -1,5 +1,5 @@
 const { Pool } = require('pg'); // used cause the code is run from terminal
-const secrets = require('../middleware/ENV.json');
+const secrets = require('../middleware/ENV');
 
 const env = process.env.NODE_ENV || 'development';
 
