@@ -3,19 +3,20 @@ HOST: https://sendit-dera.herokuapp.com/api/v1
 
 # Sendit API
 
-SendIT is a courier service that helps users deliver parcels to different destinations. 
+SendIT is a courier service that helps users deliver parcels to different destinations.
+For the interactive API, please click [link](https://senditdera.docs.apiary.io/#)
 
-## Users [/users]
+# Group Users
+
+## List all users [GET /users]
 
 This requires an admin authorisation token for access.
-
-### List All users [GET]
 
 + Request
 
     + Headers
     
-            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6I...
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo
 
 + Response 200 (application/json)
 
@@ -46,9 +47,7 @@ This requires an admin authorisation token for access.
             "error": "user auth failed"
         }
 
-## User Signup [/users/auth/signup]
-
-### signup user [POST]
+## User signup [POST /users/auth/signup]
 
 + Request (application/json)
 
@@ -89,9 +88,7 @@ This requires an admin authorisation token for access.
             "error": "Username already exists"
         }
         
-## User Login [/users/auth/login]
-
-### login user [POST]
+## User login [POST /users/auth/login]
 
 + Request (application/json)
 
@@ -131,11 +128,13 @@ This requires an admin authorisation token for access.
             "error": "Email/Password Incorrect"
         }
 
-## User Parcels [/users/{userId}/parcels]
+## User parcels [GET /users/{placedby}/parcels]
 
 This requires either admin authentication or user authentication
 
-### get user parcels [GET]
++ Parameter
+
+    + placedby (UUID) - id of the user in the form of a UUID
 
 + Request (application/json)
 
@@ -162,6 +161,336 @@ This requires either admin authentication or user authentication
                     "sentfrom": "lagos",
                     "sentto": "niger",
                     "description": "just send"
+                }
+            ]
+        }
+        
+# Group Parcels
+
+## All parcels [/parcels]
+
+### Create parcels [POST]
+It is required that user be logged in or admin access. 
+
++ Request (application/json)
+
+    + Headers
+
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJlZTM1NTY4LTEyODItNGUzYi05YmRmLTJjZDAyODYxZmVkMiIsImlhdCI6MTU0NDY0NTM1MSwiZXhwIjoxNTQ3MjM3MzUxfQ.0BI9iw7tKISxrPwYz_uBd78P40fZnWGmvdOe16czqqc
+
+    + Body
+    
+            {
+                "weight": "100.23",
+                "sentfrom": "zamfara",
+                "sentto": "niger",
+                "description": "kidney",
+                "weightmetric": "kg"
+            }
+            
++ Response 201 (application/json)
+
+        {
+            "status": 201,
+            "data": [
+                { 
+                    "id": "1de87067-3790-46fe-a744-49285772b453",
+                    "message": "Order created"
+                }
+            ] 
+        }
+
++ Response 500 (application/json)
+
+        {
+            "status": 500,
+            "error": {
+                "name": "error",
+                "length": 351,
+                "severity": "ERROR",
+                "code": "23503",
+                "detail": "Key (placedby)=(48cdacb9-98f8-459e-a8f3-ddc11c8c2a4d) is not present in table \"users\".",
+                "schema": "public",
+                "table": "parcels",
+                "constraint": "parcels_placedby_fkey",
+                "file": "d:\\pginstaller.auto\\postgres.windows-x64\\src\\backend\\utils\\adt\\ri_triggers.c",
+                "line": "2851",
+                "routine": "ri_ReportViolation"
+            }
+        }
+
+### Get parcels [GET]
+Admin access only. 
+
++ Request (application/json)
+
+    + Headers
+
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo
+            
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "id": "cd1e0667-4c0f-4ff2-8af2-b323eefdb492",
+                    "placedby": "a4c1a330-8477-4b52-b7cf-ef290a0bbc1f",
+                    "weight": 20.4,
+                    "weightmetric": "kg",
+                    "senton": "2018-12-22T02:19:12.732Z",
+                    "currentlocation": "Aba",
+                    "sentfrom": "ghana",
+                    "sentto": "Akure",
+                    "description": "black shoe",
+                    "username": "chiric",
+                    "email": "jenniferolibie@gmail.com"
+                }
+            ]
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": 401,
+            "error": "user auth failed"
+        }
+
+## Single parcel [/parcels/{parcelId}]
+
++ Parameter
+
+    + parcelId (UUID) - id of the parcel in the form of a UUID
+    
+### Get parcel by id [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo
+            
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "id": "cd1e0667-4c0f-4ff2-8af2-b323eefdb492",
+                    "placedby": "a4c1a330-8477-4b52-b7cf-ef290a0bbc1f",
+                    "weight": 20.4,
+                    "weightmetric": "kg",
+                    "senton": "2018-12-22T02:19:12.732Z",
+                    "currentlocation": "Aba",
+                    "sentfrom": "ghana",
+                    "sentto": "Akure",
+                    "description": "black shoe",
+                    "username": "chiric",
+                    "email": "jenniferolibie@gmail.com"
+                }
+            ]
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": 401,
+            "error": "user auth failed"
+        }
+
+## Change parcel status [PATCH /parcels/{parcelId}/status]
+
++ Parameter
+
+    + parcelId (UUID) - id of the parcel in the form of a UUID
+
++ Request (application/json)
+
+    + Headers
+
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo
+    
+    + Body
+    
+            {
+                "status": "delivered"
+            }
+                  
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "id": "a66a1bf6-92ba-4147-af77-f262b5024a5f",
+                    "status": "delivered",
+                    "message": "Parcel Status Updated"
+                }
+            ]
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": 401,
+            "error": "user auth failed"
+        }
+
+## Change parcel destination [PATCH /parcels/{parcelId}/destination]
+
++ Parameter
+
+    + parcelId (UUID) - id of the parcel in the form of a UUID
+
++ Request (application/json)
+
+    + Headers
+
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo
+    
+    + Body
+    
+            {
+                "sentto": "akure"
+            }
+            
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "id": "a66a1bf6-92ba-4147-af77-f262b5024a5f",
+                    "sentto": "akure",
+                    "message": "Parcel destination changed"
+                }
+            ]
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": 401,
+            "error": "user auth failed"
+        }
+
++ Response 409 (application/json)
+
+        {
+            "status": 409,
+            "error": "action not allowed. Parcel already delivered"
+        }
+
+## Change parcel current location [PATCH /parcels/{parcelId}/currentlocation]
+
++ Parameter
+
+    + parcelId (UUID) - id of the parcel in the form of a UUID
+
++ Request (application/json)
+
+    + Headers
+
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo
+    
+    + Body
+    
+            {
+                "currentlocation": "india"
+            }
+            
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "id": "a66a1bf6-92ba-4147-af77-f262b5024a5f",
+                    "currentlocation": "india",
+                    "message": "Parcel location updated"
+                }
+            ]
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": 401,
+            "error": "user auth failed"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "status": 404,
+            "error": "Parcel not found"
+        }
+
+## Cancel parcel order [PATCH /parcels/{parcelId}/cancel]
+
++ Parameter
+
+    + parcelId (UUID) - id of the parcel in the form of a UUID
+
++ Request (application/json)
+
+    + Headers
+
+            x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDUzNDE0MTcsImV4cCI6MTU0NzkzMzQxN30.YXWbAoxIu03ffnVnbuKxzAWKtAH33455fmmpLtPWtJo
+    
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "id": "a66a1bf6-92ba-4147-af77-f262b5024a5f",
+                    "active": "false",
+                    "message": "Parcel order cancelled"
+                }
+            ]
+        }
+
++ Response 401 (application/json)
+
+        {
+            "status": 401,
+            "error": "user auth failed"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "status": 404,
+            "error": "Parcel not found"
+        }
+
+# Group Admin
+
+## Login [POST /admin/auth/login]
+
++ Request (application/json)
+
+        {
+            "name": "superadmin",
+            "password": "admin"
+        }
+            
++ Response 200 (application/json)
+
+        {
+            "status": 200,
+            "data": [
+                {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBiNDU0NTFiLTljMDctNGVjMi1hOTU3LTg2OTUwZDZjNzgwYiIsImFkbWluIjp0cnVlLCJpYXQiOjE1NDY5MDM1MjAsImV4cCI6MTU0OTQ5NTUyMH0._mhmhyMiPPQCuWyAFXfEZII6JpOrB8eBnzaRFcy4h5M",
+                    "user": {
+                        "id": "0b45451b-9c07-4ec2-a957-86950d6c780b",
+                        "name": "superadmin",
+                        "email": "b2comicscrum@gmail.com",
+                        "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+                        "createddate": "2018-12-18T16:40:30.296Z",
+                        "modifieddate": "2018-12-18T16:40:30.296Z"
+                    }
                 }
             ]
         }
