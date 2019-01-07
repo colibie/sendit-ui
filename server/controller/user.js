@@ -63,7 +63,7 @@ const User = {
       
       if (!rows[0]) return res.status(401).json({ status: 401, error: 'Email/Password Incorrect' });
       return res.status(200).json({
-        status: 500,
+        status: 200,
         data: [{
           token: setToken({ id: rows[0].id, email: rows[0].email }), 
           user: rows[0]
