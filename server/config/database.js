@@ -13,18 +13,14 @@ if (env === 'test') {
 } else if (env === 'development') {
   connectionString.database = secrets.database;
 } else {
-  connectionString = `${process.env.DATABASE_URL}?ssl=true`;
+  connectionString = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+  };
 }
 
-// const db = env === 'test' ? secrets.testDb :
-// env === 'production' ? process.env.DATABASE_URL : secrets.database;
 const client = new Client(connectionString);
 
 client.connect();
-console.log(process.env.DATABASE_URL)
+
 export default client;
-// module.exports = () => {
-//   const client = new Client(connectionString);
-//   client.on('connect', () => console.log('connected to db'));
-//   return client;
-// };
