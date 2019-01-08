@@ -7,7 +7,8 @@
     "test": "cross-env NODE_ENV=test nyc mocha && nyc report --reporter=text-lcov | coveralls",
     "cover": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "start:dev": "cross-env NODE_ENV=development nodemon server/bin/dev",
-    "build": "rimraf dist/ && mkdir dist && babel server -s -d dist",
+    "doc": "node server/documentation/doc.js",
+    "build": "npm run doc && rimraf dist/ && mkdir dist && babel server -s -d dist",
     "start": "node dist/server.js"
   },
   "repository": {
@@ -42,6 +43,7 @@
     "supertest": "^3.3.0"
   },
   "dependencies": {
+    "aglio": "^2.3.0",
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",

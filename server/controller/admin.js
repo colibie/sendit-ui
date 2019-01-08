@@ -18,7 +18,7 @@ const Admin = {
       
       if (!rows[0]) return res.status(401).json({ status: 401, error: 'Name/Password Incorrect' });
       return res.status(200).json({
-        status: 500,
+        status: 200,
         data: [{
           token: auth.setToken({ id: rows[0].id, admin: true }), 
           user: rows[0]
