@@ -4,3 +4,4 @@ tddlearn.html
 /.nyc_output
 .env
 .coveralls.yml
+sendit.dump
