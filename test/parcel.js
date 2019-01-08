@@ -60,15 +60,29 @@ describe('api/v1/parcels', () => {
         });
       done();
     });
-    it('should GET parcel by id', (done) => {
-      supertest(server)
-        .get(`api/v1/parcels/${userA.parcel}?token=${token.admin}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.data.should.be.a('array');
-        });
-      done();
+
+    describe('/GET by id', () => {
+      it('should GET parcel by id', (done) => {
+        supertest(server)
+          .get(`api/v1/parcels/${userA.parcel}?token=${token.admin}`)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.data.should.be.a('array');
+          });
+        done();
+      });
+
+      it('should return 401 access error', (done) => {
+        supertest(server)
+          .get(`api/v1/parcels/${userA.parcel}?token=${token.userB}`)
+          .end((err, res) => {
+            res.should.have.status(401);
+            res.body.should.be.a('object');
+            res.body.should.have.property('error');
+          });
+        done();
+      });
     });
   });
 
