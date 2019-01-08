@@ -21,7 +21,7 @@ if (env === 'test') {
 const client = new Client(connectionString);
 
 client.connect();
-
+console.log(process.env.DATABASE_URL)
 export default client;
 // module.exports = () => {
 //   const client = new Client(connectionString);
