@@ -10,13 +10,13 @@ let connectionString = {
 };
 if (env === 'test') {
   connectionString.database = secrets.testDb;
-} else if (env === 'production') {
+} else if (env === 'development') {
+  connectionString.database = secrets.database;
+} else {
   connectionString = {
     connectionString: process.env.DATABASE_URL,
     ssl: true,
   };
-} else {
-  connectionString.database = secrets.database;
 }
 
 // const db = env === 'test' ? secrets.testDb :
