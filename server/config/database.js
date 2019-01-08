@@ -1,4 +1,4 @@
-const { Pool } = require('pg'); // used cause the code is run from terminal
+const { Client } = require('pg'); // used cause the code is run from terminal
 const secrets = require('../middleware/ENV').default;
 
 const env = process.env.NODE_ENV || 'development';
@@ -18,9 +18,13 @@ if (env === 'test') {
 
 // const db = env === 'test' ? secrets.testDb :
 // env === 'production' ? process.env.DATABASE_URL : secrets.database;
+const client = new Client(connectionString);
 
-module.exports = () => {
-  const pool = new Pool(connectionString);
-  pool.on('connect', () => console.log('connected to db'));
-  return pool;
-};
+client.connect();
+
+export default client;
+// module.exports = () => {
+//   const client = new Client(connectionString);
+//   client.on('connect', () => console.log('connected to db'));
+//   return client;
+// };
