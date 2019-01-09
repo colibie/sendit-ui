@@ -3,12 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var db = require('../config/database');
+var pool = require('../config/database').default;
 
-var pool = void 0;
 exports.default = {
   query: function query(text, options) {
-    if (!pool) pool = db();
+    if (!pool) pool = pool.connect();
     return new Promise(function (resolve, reject) {
       pool.query(text, options).then(function (res) {
         return resolve(res);

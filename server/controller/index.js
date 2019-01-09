@@ -1,9 +1,8 @@
-const db = require('../config/database');
+let pool = require('../config/database').default;
 
-let pool;
 export default {
   query(text, options) {
-    if (!pool) pool = db();
+    if (!pool) pool = pool.connect();
     return new Promise((resolve, reject) => {
       pool.query(text, options)
         .then(res => resolve(res))
